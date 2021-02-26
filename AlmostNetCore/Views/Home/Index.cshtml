@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@model int[][]
+
+<div class="row">
+
+    <table class="table table-sm table-bordered">
+        <tbody>
+            @if (Model != null)
+            {
+                for (int i = 0; i < Model.GetLength(0); i++)
+                {
+                    <tr class="col text-center">
+                        @for (int j = 0; j < Model[i].GetLength(0); j++)
+                        {
+                            <td>
+                                @Model[i][j]
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div class="row">
+        <div class="col-lg-1 col-sm-1">
+            @if (Model != null)
+            {
+                using (Ajax.BeginForm("transform", "Home", new AjaxOptions() { HttpMethod = "POST" }))
+                {
+                    for (int column = 0; column < Model.GetLength(0); column++)
+                    {
+                        for (int row = 0; row < Model[column].Length; row++)
+                        {
+                            @Html.HiddenFor(x => Model[column][row]);
+                        }
+                    }
+                    <button type="submit" class="btn">
+                        <img width="24" height="24" opacity="0" src="~/Images/sync-outline.svg" />
+                    </button>
+                }
+            }
+        </div>
+        <div class="col-lg-2 col-sm-2">
+            <button style="font-size: 18px;" class="btn" onclick="location.href='@Url.Action("getMatrix", "Home")'">Get Matrix </button>
+        </div>
+        <div class="col-lg-2 col-sm-2">
+            <button class="btn" style="font-size: 18px;" type="button" onclick="location.href='@Url.Action("index", "Home")'">discharge</button>
+        </div>
+        <div class="col-lg-3 col-sm-3">
+            @if (Model != null)
+            {
+                using (Html.BeginForm("DowloadFile", "file"))
+                {
+                    for (int column = 0; column < Model.GetLength(0); column++)
+                    {
+                        for (int row = 0; row < Model[column].Length; row++)
+                        {
+                            @Html.HiddenFor(x => Model[column][row]);
+                        }
+                    }
+                    <button style="font-size: 18px;" type="submit" class="btn">
+                        Download matrix
+                    </button>
+                }
+            }
+        </div>
+        <div class="col-lg-3 col-sm-3">
+            @using (Html.BeginForm("uploadFile", "File", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-group">
+                    <input type="file" id="postedFile" name="postedFile" accept=".csv" />
+                    <input type="submit" title="Upload" value="Upload" class="btn" />
+                </div>
+
+
+            }
+
+
+        </div>
+    </div>
